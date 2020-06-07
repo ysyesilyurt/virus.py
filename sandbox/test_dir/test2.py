@@ -1,0 +1,31 @@
+if __name__ == '__main__':
+    print("Hello HACK! Sadly, I'm a victim. This is {} speaking...".format(__file__))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
