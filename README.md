@@ -2,7 +2,7 @@
 Is it possible to `hack` *covidiots* to stop them spreading [Covid-19](https://www.wikiwand.com/en/Coronavirus_disease_2019)?
 
 ## How?
-1- Copies an encrypted version of itself using otp (along with its decryption key ofc)
+1- Copies an encrypted version of itself using [otp](https://www.wikiwand.com/en/One-time_pad) (along with its decryption key ofc)
 
 2- Infects all the python scripts underneath its sandbox, i.e. root directory (appends itself and then also appends the hash value of the infected version of the file to make sure injected virus remains there, i.e. guarded against all kind of modifications, and not to infect an already infected file twice)
 
